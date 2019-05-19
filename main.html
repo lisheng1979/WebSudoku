@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta name="robots" content="noindex, nofollow"/>
     <meta name="googlebot" content="noindex, nofollow"/>
-    <title>sudoku - JSRUN 驱动</title>
+    <title>sudoku</title>
 
     <script type="text/javascript" src="" ></script>
     <link rel="stylesheet" type="text/css" href="main.css"/>
@@ -13,7 +13,7 @@
 <body>
 
     <h1 style="text-align:center">Sudoku</h1>
-    <div align="center">
+    <!-- <div align="center">
     
         <table border="3">
             <tr>
@@ -118,13 +118,17 @@
             </tr>
             
         </table>
-    </div>
+    </div> -->
     <div align="center">
+        <canvas id="myCanvas" width="450" height="450" style="border:5px solid #f07341;">
+        </canvas>
         <br />
-        <input class="button" type="button" onclick="Sample()" value="Sample">
+        <br />
+        <input class="button" type="button" onclick="LoadSample()" value="Sample">
         <input class="button" type="button" onclick="Solve()" value="Solve">
         <input class="button" type="button" onclick="Clear()" value="Clear">
     </div>
+
 </body>
 
 

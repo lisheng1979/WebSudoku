@@ -1,62 +1,40 @@
-function Sample()
-{
-  iniarray(rows);
-	iniarray(columns);
-	iniarray(boxes);
-  document.getElementById('r0c0').value = 5;
-  document.getElementById('r0c4').value = 9;
-  document.getElementById('r0c6').value = 2;
-  document.getElementById('r0c8').value = 1;
-  document.getElementById('r1c2').value = 2;
-  document.getElementById('r1c5').value = 7;
-  document.getElementById('r1c8').value = 8;
-  document.getElementById('r2c1').value = 8;
-  document.getElementById('r2c6').value = 3;
-  document.getElementById('r3c1').value = 1;
-  document.getElementById('r3c2').value = 4;
-  document.getElementById('r3c5').value = 5;
-  document.getElementById('r4c3').value = 9;
-  document.getElementById('r4c5').value = 3;
-  document.getElementById('r5c3').value = 8;
-  document.getElementById('r5c6').value = 9;
-  document.getElementById('r5c7').value = 4;
-  document.getElementById('r6c2').value = 3;
-  document.getElementById('r6c7').value = 6;
-  document.getElementById('r7c0').value = 6;
-  document.getElementById('r7c3').value = 2;
-  document.getElementById('r7c6').value = 1;
-  document.getElementById('r8c0').value = 8;
-  document.getElementById('r8c2').value = 9;
-  document.getElementById('r8c4').value = 6;
-  document.getElementById('r8c8').value = 5;
-}
+var WIDTH = 50;
+var HEIGHT = 50;
 
+var c=document.getElementById("myCanvas");
+var cxt=c.getContext("2d");
 
+var sudoku = new Array();
 var rows = new Array();
+var columns = new Array();
+var boxes = new Array();
+
+var i; //for loop
+var j; //for loop
+
+var selectedX;
+var selectedY;
+var numberToFill
+
 function iniarray(x)
 {
-	for(var a = 0;a<9;a++)
+	for(i = 0;i<9;i++)
 	{
-  	x[a] = new Array();
-		for(var b = 0;b<9;b++)
+  	x[i] = new Array();
+		for(j = 0;j<9;j++)
   	{
-  		x[a][b] = 0;
+  		x[i][j] = 0;
   	}
 	}
 }
 
-var columns = new Array();
-
-var boxes = new Array();
-
-
 function Solve() 
 {
-  for(var i = 0;i<9;i++)
+  for(i = 0;i<9;i++)
   {
-    for(var j = 0;j<9;j++)
+    for(j = 0;j<9;j++)
     {
-      var n = document.getElementById("r"+i+"c"+j).value;
+      var n = document.getElementById("r"+i+"c"+j);
       if(n!="")
       {
         var bx = Math.floor(j/3);
@@ -82,7 +60,7 @@ function fill(x, y)
   {
     ny = y+1;
   }
-  if(document.getElementById("r"+y+"c"+x).value!="")
+  if(document.getElementById("r"+y+"c"+x)!="")
   {
     return fill(nx,ny);
   }
@@ -96,12 +74,12 @@ function fill(x, y)
         rows[y][i] = 1;
         columns[x][i] = 1;
         boxes[box_key][i] = 1;
-        document.getElementById("r"+y+"c"+x).value = i;
+        document.getElementById("r"+y+"c"+x) = i;
         if(fill(nx,ny)== true)
         {
             return true;
         }
-        document.getElementById("r"+y+"c"+x).value = "";
+        document.getElementById("r"+y+"c"+x) = "";
         boxes[box_key][i] = 0;
         columns[x][i] = 0;
         rows[y][i] = 0;
@@ -110,14 +88,131 @@ function fill(x, y)
    return false;
 }
 
+
+function DrawTable()
+{
+    var x;
+    for(i=1;i<9;i++)
+    {
+        x = i*50;
+        cxt.moveTo(x,0);
+        cxt.lineTo(x,HEIGHT*9);
+        cxt.moveTo(0,x);
+        cxt.lineTo(WIDTH*9,x);
+        cxt.strokeStyle="#007341";
+        cxt.lineWidth=2;
+        cxt.stroke();
+    }
+
+}
+
+function DrawTextInMiddleOfBox(number, offsetX, offsetY)
+{
+    cxt.font="30px Arial";
+    cxt.fillStyle = "red";
+    /* alert(number);
+    alert(offsetX);
+    alert(offsetY); */
+    cxt.fillText(number, offsetX+16, offsetY+35 );
+}
+
+function Sample()
+{
+  iniarray(sudoku);
+  for(i = 0;i<9;i++)
+  {
+    for(j = 0;j<9;j++)
+    {
+      sudoku[i][j]="";
+    }
+  }
+  sudoku[0][0] = 5;
+  sudoku[0][4] = 9;
+  sudoku[0][6] = 2;
+  sudoku[0][8] = 1;
+  sudoku[1][2] = 2;
+  sudoku[1][5] = 7;
+  sudoku[1][8] = 8;
+  sudoku[2][1] = 8;
+  sudoku[2][6] = 3;
+  sudoku[3][1] = 1;
+  sudoku[3][2] = 4;
+  sudoku[3][5] = 5;
+  sudoku[4][3] = 9;
+  sudoku[4][5] = 3;
+  sudoku[5][3] = 8;
+  sudoku[5][6] = 9;
+  sudoku[5][7] = 4;
+  sudoku[6][2] = 3;
+  sudoku[6][7] = 6;
+  sudoku[7][0] = 6;
+  sudoku[7][3] = 2;
+  sudoku[7][6] = 1;
+  sudoku[8][0] = 8;
+  sudoku[8][2] = 9;
+  sudoku[8][4] = 6;
+  sudoku[8][8] = 5;
+
+}
+
+function LoadSample()
+{
+  Sample();
+  
+  for(i=0;i<9;i++)
+  {
+    for(j=0;j<9;j++)
+    {
+      DrawTextInMiddleOfBox(sudoku[i][j],i*WIDTH,j*HEIGHT);
+    }
+  }
+}
+
 function Clear() 
 {
-  var x=document.getElementsByTagName("input");
-  for(var i=0;i<x.length-3;i++)
-    {
-      x[i].value = "";
-    }
-	iniarray(rows);
+  
+  cxt.clearRect(0, 0, c.width, c.height);
+  DrawTable();
+  iniarray(rows);
 	iniarray(columns);
-	iniarray(boxes);
+  iniarray(boxes);
+  iniarray(sudoku);
+  
+}
+
+
+
+
+DrawTable();
+
+c.onmousedown = function(e)
+{
+  var rect = c.getBoundingClientRect();
+  var x = Math.floor((e.clientX-rect.left-5)/WIDTH);
+  var y = Math.floor((e.clientY-rect.top-5)/HEIGHT);
+  selectedX = x;
+  selectedY = y;
+  cxt.fillStyle="#c9bfbc";
+  cxt.fillRect(x*WIDTH,y*HEIGHT,WIDTH,HEIGHT); 
+
+  DrawTable();
+  
+  
+  //alert((e.clientX-rect.left-5)+','+(e.clientY-rect.top-5));
+
+}
+
+
+window.addEventListener('keydown',handlekeydown,false);
+
+function handlekeydown(e)
+{
+  var key = event.keyCode;
+  if (key<=57 && key >= 49)
+  {
+    numberToFill = key - 48;
+  
+  //alert(numberToFill);
+  DrawTextInMiddleOfBox(numberToFill, selectedX*WIDTH, selectedY*HEIGHT);
+  }
 }
