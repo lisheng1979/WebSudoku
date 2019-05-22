@@ -16,6 +16,8 @@ var selectedX;
 var selectedY;
 var numberToFill
 
+
+
 function iniarray(x)
 {
 	for(i = 0;i<9;i++)
@@ -30,28 +32,45 @@ function iniarray(x)
 
 function Solve() 
 {
-  for(i = 0;i<9;i++)
+  iniarray(rows);
+  iniarray(columns);
+  iniarray(boxes);
+  
+  for(j = 0;j<9;j++)
   {
-    for(j = 0;j<9;j++)
+    for(i = 0;i<9;i++)
     {
-      var n = document.getElementById("r"+i+"c"+j);
-      if(n!="")
+      var n = sudoku[j][i];
+      if(n!= 0)
       {
-        var bx = Math.floor(j/3);
-        var by = Math.floor(i/3);
-        rows[i][n]=1;
-        columns[j][n]=1;
-        boxes[by*3+bx][n]=1;
+        var by = Math.floor(j/3);
+        var bx = Math.floor(i/3);
+        rows[j][n-1]=1;
+        columns[i][n-1]=1;
+        boxes[by*3+bx][n-1]=1;
       }
       
     }
   }
   fill(0,0);
+
+  for(j=0;j<9;j++) //output result
+  {
+    for(i=0;i<9;i++)
+    {
+      if(sudoku[j][i]!=0)
+      {
+        DrawTextInMiddleOfBox(sudoku[j][i],i*WIDTH,j*HEIGHT);
+      }
+    }
+  }
 }
+
 function fill(x, y)
 {
   if(y==9)
   {
+    //alert('finished');
     return true;
   }
   var nx = (x+1)%9;
@@ -60,29 +79,30 @@ function fill(x, y)
   {
     ny = y+1;
   }
-  if(document.getElementById("r"+y+"c"+x)!="")
+  if(sudoku[y][x]!= 0)
   {
     return fill(nx,ny);
   }
-  for(var i=1;i<10;i++)
+  for(var z=1;z<10;z++)
   {
     var bx = Math.floor(x / 3);
     var by = Math.floor(y / 3);
     var box_key = by * 3 + bx;
-    if((rows[y][i]!=1) && (columns[x][i]!=1) && (boxes[box_key][i]!=1))
+    if((rows[y][z-1]!=1) && (columns[x][z-1]!=1) && (boxes[box_key][z-1]!=1))
     {
-        rows[y][i] = 1;
-        columns[x][i] = 1;
-        boxes[box_key][i] = 1;
-        document.getElementById("r"+y+"c"+x) = i;
+        rows[y][z-1] = 1;
+        columns[x][z-1] = 1;
+        boxes[box_key][i-1] = 1;
+        sudoku[y][x] = z;
         if(fill(nx,ny)== true)
         {
             return true;
         }
-        document.getElementById("r"+y+"c"+x) = "";
-        boxes[box_key][i] = 0;
-        columns[x][i] = 0;
-        rows[y][i] = 0;
+        sudoku[y][x] = 0;
+        boxes[box_key][z-1] = 0;
+        columns[x][z-1] = 0;
+        rows[y][z-1] = 0;
+        
     }   
    }
    return false;
@@ -110,22 +130,12 @@ function DrawTextInMiddleOfBox(number, offsetX, offsetY)
 {
     cxt.font="30px Arial";
     cxt.fillStyle = "red";
-    /* alert(number);
-    alert(offsetX);
-    alert(offsetY); */
     cxt.fillText(number, offsetX+16, offsetY+35 );
 }
 
 function Sample()
 {
   iniarray(sudoku);
-  for(i = 0;i<9;i++)
-  {
-    for(j = 0;j<9;j++)
-    {
-      sudoku[i][j]="";
-    }
-  }
   sudoku[0][0] = 5;
   sudoku[0][4] = 9;
   sudoku[0][6] = 2;
@@ -159,11 +169,14 @@ function LoadSample()
 {
   Sample();
   
-  for(i=0;i<9;i++)
+  for(j=0;j<9;j++)
   {
-    for(j=0;j<9;j++)
+    for(i=0;i<9;i++)
     {
-      DrawTextInMiddleOfBox(sudoku[i][j],i*WIDTH,j*HEIGHT);
+      if(sudoku[j][i]!=0)
+      {
+        DrawTextInMiddleOfBox(sudoku[j][i],i*WIDTH,j*HEIGHT);
+      }
     }
   }
 }
@@ -207,7 +220,7 @@ window.addEventListener('keydown',handlekeydown,false);
 
 function handlekeydown(e)
 {
-  var key = event.keyCode;
+  var key = e.keyCode;
   if (key<=57 && key >= 49)
   {
     numberToFill = key - 48;
