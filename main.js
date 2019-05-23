@@ -70,7 +70,6 @@ function fill(x, y)
 {
   if(y==9)
   {
-    //alert('finished');
     return true;
   }
   var nx = (x+1)%9;
@@ -92,7 +91,7 @@ function fill(x, y)
     {
         rows[y][z-1] = 1;
         columns[x][z-1] = 1;
-        boxes[box_key][i-1] = 1;
+        boxes[box_key][z-1] = 1;
         sudoku[y][x] = z;
         if(fill(nx,ny)== true)
         {
@@ -104,7 +103,7 @@ function fill(x, y)
         rows[y][z-1] = 0;
         
     }   
-   }
+  }
    return false;
 }
 
@@ -112,15 +111,26 @@ function fill(x, y)
 function DrawTable()
 {
     var x;
-    for(i=1;i<9;i++)
+    for(var t=1;t<9;t++)
     {
-        x = i*50;
+        x = t*50;
+        cxt.beginPath();
         cxt.moveTo(x,0);
         cxt.lineTo(x,HEIGHT*9);
         cxt.moveTo(0,x);
         cxt.lineTo(WIDTH*9,x);
-        cxt.strokeStyle="#007341";
-        cxt.lineWidth=2;
+        cxt.closePath();
+        if(t % 3 == 0)
+        {
+          cxt.strokeStyle="#ff7341";
+          cxt.lineWidth=3;
+        }
+        else
+        {
+          cxt.strokeStyle="#007341";
+          cxt.lineWidth=2;
+        }
+        
         cxt.stroke();
     }
 
@@ -209,10 +219,6 @@ c.onmousedown = function(e)
   cxt.fillRect(x*WIDTH,y*HEIGHT,WIDTH,HEIGHT); 
 
   DrawTable();
-  
-  
-  //alert((e.clientX-rect.left-5)+','+(e.clientY-rect.top-5));
-
 }
 
 
@@ -224,8 +230,6 @@ function handlekeydown(e)
   if (key<=57 && key >= 49)
   {
     numberToFill = key - 48;
-  
-  //alert(numberToFill);
-  DrawTextInMiddleOfBox(numberToFill, selectedX*WIDTH, selectedY*HEIGHT);
+    DrawTextInMiddleOfBox(numberToFill, selectedX*WIDTH, selectedY*HEIGHT);
   }
 }
