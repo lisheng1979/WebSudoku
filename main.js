@@ -16,7 +16,10 @@ var selectedX;
 var selectedY;
 var numberToFill
 
-
+iniarray(rows);
+iniarray(columns);
+iniarray(boxes);
+iniarray(sudoku);
 
 function iniarray(x)
 {
@@ -32,9 +35,9 @@ function iniarray(x)
 
 function Solve() 
 {
-  iniarray(rows);
+/*   iniarray(rows);
   iniarray(columns);
-  iniarray(boxes);
+  iniarray(boxes); */
   
   for(j = 0;j<9;j++)
   {
@@ -230,6 +233,13 @@ function handlekeydown(e)
   if (key<=57 && key >= 49)
   {
     numberToFill = key - 48;
+    sudoku[selectedX][selectedY]=numberToFill;
+    rows[selectedY][numberToFill-1]=1;
+    columns[selectedX][numberToFill-1]=1;
+    var bx = Math.floor(selectedX / 3);
+    var by = Math.floor(selectedY / 3);
+    var box_key = by * 3 + bx;
+    boxes[box_key][numberToFill-1]=1;
     DrawTextInMiddleOfBox(numberToFill, selectedX*WIDTH, selectedY*HEIGHT);
   }
 }
